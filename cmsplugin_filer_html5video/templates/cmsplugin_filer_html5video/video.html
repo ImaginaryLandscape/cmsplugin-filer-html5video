@@ -1,12 +1,21 @@
-{% load sekizai_tags %}
-{% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}cmsplugin_filer_html5video/css/video-js.css" />{% endaddtoblock %}
-{% addtoblock "js" %}
-	<script type="text/javascript" src="{{ STATIC_URL }}cmsplugin_filer_html5video/js/video.js"></script>{% endaddtoblock %}
+{% load embed_video_tags sekizai_tags %}
 
-<video id="videojs_plugin_{{ object.pk }}" class="video-js vjs-default-skin" controls
-       preload="auto" width="{{ object.width }}" height="{{ object.height }}" poster="{{ object.image.url }}"
-       data-setup="{}">
-	{% for format, url in formats.items %}
-		<source src="{{ url }}" type='{{ format }}'>
-	{% endfor %}
-</video>
+{% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}cmsplugin_filer_html5video/css/video-js.css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ STATIC_URL }}cmsplugin_filer_html5video/js/video.js"></script>{% endaddtoblock %}
+
+<div class="{{ object.alignment|default:"" }}" style="width: {% if object.width %}{{ object.width }}px{% else %}100%{% endif %}; max-width: 100%;">
+  <div class="fluid-video">
+  {% if object.video_url %}
+    {% video object.video_url as video %}
+    <iframe frameborder="0" src="{{ video.url }}?{% if video.backend == 'youtubebackend' %}rel=0&controls=2&showinfo=0&modestbranding=1&color=white&playsinline=1{% endif %}"></iframe>
+    {% endvideo %}
+  {% else %}
+    <video id="videojs_plugin_{{ object.pk }}" class="video-js vjs-default-skin" controls
+      preload="auto" data-setup="{}" width=" " height=" ">
+    {% for format, url in formats.items %}
+      <source src="{{ url }}" type='{{ format }}'>  
+    {% endfor %}
+    </video>
+  {% endif %}
+  </div>
+</div>

@@ -3,35 +3,41 @@
 import os
 
 from django.utils.translation import ugettext_lazy as _
+from django.templatetags.static import static
 
 from cms.plugin_pool import plugin_pool
 from cms.plugin_base import CMSPluginBase
-from filer.settings import FILER_STATICMEDIA_PREFIX
 
 from cmsplugin_filer_html5video.models import FilerHTML5Video
 
 class FilerHTML5VideoPlugin(CMSPluginBase):
     model = FilerHTML5Video
-    name = _("HTML5 Video (Filer)")
+    module = "Filer"
+    name = _("HTML5 Video")
 
     render_template = "cmsplugin_filer_html5video/video.html"
     text_enabled = True
 
-    general_fields = [
-        'title',
-        ('width', 'height'),
-        'auto_play',
-        'auto_hide',
-        'fullscreen',
-        'loop',
-        ]
 
     fieldsets = [
         (None, {
-            'fields': general_fields,
+            'fields': (
+                'video_url',
+                'alignment',
+                'width',
+             )
         }),
-        (_('formats'), {
-            'fields': ('video_mp4', 'video_webm', 'video_ogv', 'image')
+        (_('Uploaded Video'), {
+            'classes': ('collapse',),
+            'fields': (
+                'video_mp4', 
+                'video_webm', 
+                'video_ogv', 
+                'auto_play',
+                'auto_hide',
+                'fullscreen',
+                'loop',
+            )
         })
     ]
 
@@ -48,6 +54,6 @@ class FilerHTML5VideoPlugin(CMSPluginBase):
         return context
 
     def icon_src(self, instance):
-        return os.path.normpath(u"%s/icons/video_%sx%s.png" % (FILER_STATICMEDIA_PREFIX, 32, 32,))
+        return static("filer/icons/video_%sx%s.png" % (32, 32,))
 
 plugin_pool.register_plugin(FilerHTML5VideoPlugin)
