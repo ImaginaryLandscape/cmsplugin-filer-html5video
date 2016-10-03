@@ -7,7 +7,7 @@
   <div class="fluid-video">
   {% if object.video_url %}
     {% video object.video_url as video %}
-    <iframe frameborder="0" src="{{ video.url }}?{% if video.backend == 'youtubebackend' %}rel=0&controls=2&showinfo=0&modestbranding=1&color=white&playsinline=1{% endif %}"></iframe>
+    <iframe frameborder="0" src="{{ video.url }}?{% if video.backend|lower == 'youtubebackend' %}&showinfo=0&rel=0{% endif %}" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
     {% endvideo %}
   {% else %}
     <video id="videojs_plugin_{{ object.pk }}" class="video-js vjs-default-skin" controls
